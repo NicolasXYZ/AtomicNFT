@@ -1,0 +1,38 @@
+syntax = "proto3";
+package dc_proto;
+
+// Responsible for merging participant messages
+service Aggregator {
+    rpc SubmitRoundMsg(SgxMsg) returns (Empty);
+    rpc SubmitParitalAggregate(SgxMsg) returns (Empty);
+}
+
+// Responsible for xoring in key shares
+service AnytrustNode{
+    rpc RegisterPubkey(SgxMsg) returns (Empty);
+    rpc SubmitAggregate(SgxMsg) returns (Empty);
+    rpc SubmitFinalShare(SgxMsg) returns (Empty);
+}
+
+// A service that stores round results
+service Broadcast{
+    rpc SubmitRoundResult(SgxMsg) returns (Empty);
+    rpc GetRoundResult(RoundResultReq) returns (RoundResult);
+}
+
+// The only thing passed between entities in this protocol is blobs of bytes. The bytes are
+// serialized and deserialized in SGX land, using a format independent of this gRPC protocol.
+message SgxMsg {
+    bytes payload = 1;
+}
+
+message RoundResultReq {
+    bytes server_keys_hash = 2;
+    uint32 epoch = 3;
+}
+
+message RoundResult {
+    bytes msg = 4;
+}
+
+message Empty {}

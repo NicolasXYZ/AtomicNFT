@@ -1,0 +1,22 @@
+enclave {
+    from "sgx_tstd.edl" import *;
+    from "sgx_stdio.edl" import *;
+    from "sgx_backtrace.edl" import *;
+    from "sgx_tstdc.edl" import *;
+    from "sgx_time.edl" import *;
+    from "sgx_env.edl" import *;
+
+    include "sgx_tcrypto.h"
+
+    trusted {
+      public sgx_status_t ecall_entrypoint(
+                        uint8_t ecall_id_raw,
+                        [user_check] uint8_t* inp,
+                        size_t inp_len,
+                        [user_check] uint8_t* output,
+                        size_t output_size,
+                        [out] size_t *bytewritten);
+
+      public sgx_status_t test_main_entrance();
+    };
+};
